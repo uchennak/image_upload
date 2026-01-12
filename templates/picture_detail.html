@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Picture Detail</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<h1>Picture Detail</h1>
+{% if just_uploaded %}<p class="upload-success">Image uploaded successfully!</p>{% endif %}
+<img src="{{ picture.image.url }}" class="picture-image" alt="Picture">
+<p>Created at: {{ picture.created_at }}</p>
+
+<div class="deletion-policy">
+    <strong>Deletion Policy:</strong> Images are automatically deleted after 7 days.<br>
+    {% with remaining=picture.time_remaining %}
+    {% if remaining %}
+    <p class="time-remaining">Time remaining: {{ remaining.days }} days, {{ remaining.hours }} hours, {{ remaining.minutes }} minutes</p>
+    {% endif %}
+    {% endwith %}
+    <p>Expires at: {{ picture.expires_at }}</p>
+</div>
+
+<div class="share-container">
+    <label><strong>Shareable Link:</strong></label><br><br>
+    <input type="text" id="shareLink" value="{{ shareable_link }}" readonly>
+    <button onclick="copyLink()">Copy Link</button>
+    <span id="copySuccess" class="success-message">Copied!</span>
+</div>
+
+<p><a href="{% url 'delete_picture' picture.pk %}">Delete this image</a> | <a href="{% url 'upload_picture' %}">Upload another picture</a></p>
+
+<script>
+function copyLink() {
+    const linkInput = document.getElementById('shareLink');
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(linkInput.value);
+    const successMsg = document.getElementById('copySuccess');
+    successMsg.style.display = 'inline';
+    setTimeout(() => { successMsg.style.display = 'none'; }, 2000);
+}
+</script>
+</body>
+</html>

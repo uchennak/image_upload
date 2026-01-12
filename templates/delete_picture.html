@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Picture</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<h1>Delete Picture</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <p class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<img src="{{ picture.image.url }}" class="picture-image" alt="Picture">
+
+<div class="delete-container">
+    <p><strong>Warning:</strong> This action cannot be undone.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="delete-btn">Delete Image</button>
+    </form>
+</div>
+
+<p><a href="{% url 'picture_detail' picture.pk %}">Cancel</a></p>
+</body>
+</html>

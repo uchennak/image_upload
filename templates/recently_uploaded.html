@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Recently Uploaded Pictures</h1>
+<ul>
+    {% for picture in pictures %}
+    <li><a href="{% url 'picture_detail' pk=picture.pk %}">{{ picture.image.name }}</a></li>
+    {% empty %}
+    <li>No pictures have been uploaded.</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
