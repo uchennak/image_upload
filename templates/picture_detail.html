@@ -13,7 +13,7 @@
 <p>Created at: {{ picture.created_at }}</p>
 
 <div class="deletion-policy">
-    <strong>Deletion Policy:</strong> Images are automatically deleted after 7 days.<br>
+    <strong>Deletion Policy:</strong> Images are automatically deleted after 1 day.<br>
     {% with remaining=picture.time_remaining %}
     {% if remaining %}
     <p class="time-remaining">Time remaining: {{ remaining.days }} days, {{ remaining.hours }} hours, {{ remaining.minutes }} minutes</p>
