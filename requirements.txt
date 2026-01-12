@@ -11,3 +11,4 @@ sqlparse==0.4.4
 urllib3==1.26.15
 whitenoise==6.11.0
 gunicorn==23.0.0
+django-storages
