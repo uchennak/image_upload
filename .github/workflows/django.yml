@@ -57,13 +57,19 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Get EC2 Instance ID from Parameter Store
+        id: get-instance
+        run: |
+          INSTANCE_ID=$(aws ssm get-parameter --name "/image-upload/EC2_INSTANCE_ID" --query "Parameter.Value" --output text)
+          echo "instance_id=$INSTANCE_ID" >> $GITHUB_OUTPUT
+
       - name: Deploy via SSM
         run: |
           aws ssm send-command \
-            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+            --instance-ids "${{ steps.get-instance.outputs.instance_id }}" \
             --document-name "AWS-RunShellScript" \
             --parameters 'commands=[
-              "cd ${{ secrets.DEPLOY_PATH }}",
+              "cd /opt/django/app",
               "git pull origin main",
               "source venv/bin/activate",
               "pip install -r requirements.txt",
