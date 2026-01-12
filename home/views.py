@@ -36,11 +36,6 @@ def picture_detail(request, pk):
     })
 
 
-def recently_uploaded(request):
-    pictures = home_models.Picture.objects.order_by('-created_at')[:10]
-    return render(request, 'upload_picture.html', {'pictures': pictures})
-
-
 def delete_picture(request, pk):
     picture = get_object_or_404(home_models.Picture, pk=pk)
 
