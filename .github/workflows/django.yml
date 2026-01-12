@@ -69,13 +69,11 @@ jobs:
             --instance-ids "${{ steps.get-instance.outputs.instance_id }}" \
             --document-name "AWS-RunShellScript" \
             --parameters 'commands=[
-              "cd /opt/django/app",
-              "git pull origin main",
-              "source venv/bin/activate",
-              "pip install -r requirements.txt",
-              "python manage.py migrate",
-              "python manage.py collectstatic --noinput",
-              "sudo systemctl restart gunicorn"
+              "cd /opt/django/app && sudo -u djangoapp git pull origin main",
+              "cd /opt/django/app && sudo -u djangoapp /opt/django/app/venv/bin/pip install -r requirements.txt",
+              "cd /opt/django/app && sudo -u djangoapp /opt/django/app/venv/bin/python manage.py migrate",
+              "cd /opt/django/app && sudo -u djangoapp /opt/django/app/venv/bin/python manage.py collectstatic --noinput",
+              "systemctl restart gunicorn"
             ]' \
             --timeout-seconds 300 \
             --output text
