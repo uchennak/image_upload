@@ -15,12 +15,7 @@ def upload_picture(request):
         form = home_forms.PictureForm(request.POST, request.FILES)
         if form.is_valid():
             picture = form.save()
-            shareable_link = get_shareable_link(request, picture)
-            return render(request, 'picture_detail.html', {
-                'picture': picture,
-                'shareable_link': shareable_link,
-                'just_uploaded': True
-            })
+            return redirect('picture_detail', pk=picture.pk)
     else:
         form = home_forms.PictureForm()
     return render(request, 'upload_image.html', {'form': form})
