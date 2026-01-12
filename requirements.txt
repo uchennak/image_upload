@@ -9,3 +9,5 @@ python-dotenv
 requests==2.29.0
 sqlparse==0.4.4
 urllib3==1.26.15
+whitenoise==6.11.0
+gunicorn==23.0.0
