@@ -10,16 +10,24 @@
 <h1>Picture Detail</h1>
 {% if just_uploaded %}<p class="upload-success">Image uploaded successfully!</p>{% endif %}
 <img src="{{ picture.image.url }}" class="picture-image" alt="Picture">
-<p>Created at: {{ picture.created_at }}</p>
+
+<div class="timezone-selector">
+    <label for="timezone"><strong>Timezone:</strong></label>
+    <select id="timezone" onchange="updateTimes()">
+        <option value="America/Detroit">Eastern</option>
+        <option value="America/Chicago">Central</option>
+        <option value="America/Denver">Mountain</option>
+        <option value="America/Los_Angeles">Pacific</option>
+        <option value="UTC">UTC</option>
+    </select>
+</div>
+
+<p>Created at: <span id="createdAt"></span></p>
 
 <div class="deletion-policy">
     <strong>Deletion Policy:</strong> Images are automatically deleted after 1 day.<br>
-    {% with remaining=picture.time_remaining %}
-    {% if remaining %}
-    <p class="time-remaining">Time remaining: {{ remaining.days }} days, {{ remaining.hours }} hours, {{ remaining.minutes }} minutes</p>
-    {% endif %}
-    {% endwith %}
-    <p>Expires at: {{ picture.expires_at }}</p>
+    <p class="time-remaining" id="timeRemaining"></p>
+    <p>Expires at: <span id="expiresAt"></span></p>
 </div>
 
 <div class="share-container">
@@ -32,6 +40,35 @@
 <p><a href="{% url 'delete_picture' picture.pk %}">Delete this image</a> | <a href="{% url 'upload_picture' %}">Upload another picture</a></p>
 
 <script>
+const createdAtUTC = new Date("{{ picture.created_at|date:'c' }}");
+const expiresAtUTC = new Date("{{ picture.expires_at|date:'c' }}");
+
+function updateTimes() {
+    const tz = document.getElementById('timezone').value;
+    const options = {
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+        timeZone: tz
+    };
+
+    document.getElementById('createdAt').textContent = createdAtUTC.toLocaleString('en-US', options);
+    document.getElementById('expiresAt').textContent = expiresAtUTC.toLocaleString('en-US', options);
+
+    const now = new Date();
+    const remaining = expiresAtUTC - now;
+    if (remaining > 0) {
+        const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        document.getElementById('timeRemaining').textContent =
+            `Time remaining: ${days} days, ${hours} hours, ${minutes} minutes`;
+    } else {
+        document.getElementById('timeRemaining').textContent = 'Expired';
+    }
+
+    localStorage.setItem('preferredTimezone', tz);
+}
+
 function copyLink() {
     const linkInput = document.getElementById('shareLink');
     linkInput.select();
@@ -41,6 +78,19 @@ function copyLink() {
     successMsg.style.display = 'inline';
     setTimeout(() => { successMsg.style.display = 'none'; }, 2000);
 }
+
+// Load saved timezone or detect user's timezone
+const savedTz = localStorage.getItem('preferredTimezone');
+const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const tzSelect = document.getElementById('timezone');
+
+if (savedTz && [...tzSelect.options].some(o => o.value === savedTz)) {
+    tzSelect.value = savedTz;
+} else if ([...tzSelect.options].some(o => o.value === userTz)) {
+    tzSelect.value = userTz;
+}
+
+updateTimes();
 </script>
 </body>
 </html>
