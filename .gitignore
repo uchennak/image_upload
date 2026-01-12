@@ -7,3 +7,8 @@ staticfiles/
 *.log
 .venv/
 venv/
+
+# IDE and editor settings
+.claude/
+.vscode/
+.idea/
