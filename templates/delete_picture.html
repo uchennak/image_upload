@@ -11,7 +11,9 @@
 
 {% if messages %}
     {% for message in messages %}
-        <p class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
+        {% if message.tags == 'error' %}
+        <p class="error">{{ message }}</p>
+        {% endif %}
     {% endfor %}
 {% endif %}
 
