@@ -34,7 +34,7 @@ if not SECRET_KEY:
         from home.utils.aws_secrets import get_parameter
         SECRET_KEY = get_parameter('/image-upload/DJANGO_SECRET_KEY')
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS",'127.0.0.1').split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(",")
 
 # CSRF Configuration for CloudFront
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if os.environ.get("CSRF_TRUSTED_ORIGINS") else []
